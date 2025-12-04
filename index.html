@@ -1,144 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animated DevOps Dashboard</title>
-    <style>
-        /* General Setup and Animations */
-        body {
-            background-color: #0d1117; /* Dark background */
-            color: #c9d1d9;
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden; /* Hide scrollbars, canvas covers everything */
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Animated DevOps Dashboard v2</title>
+<style>
+    /* General Setup and Animations */
+    body {
+        background-color: #0d1117;
+        color: #c9d1d9;
+        font-family: 'Courier New', Courier, monospace;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+        cursor: none; /* Hide the default cursor */
+    }
 
-        /* The Canvas element for the animated background */
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1; /* Place canvas behind the main content */
-        }
+    /* Keyframes for the custom cursor pulse animation */
+    @keyframes cursor-pulse {
+        0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
 
-        /* Content container with fade-in and subtle movement animation */
-        .container {
-            text-align: center;
-            padding: 40px;
-            background: rgba(22, 27, 34, 0.9); /* Semi-transparent dark box */
-            border-radius: 8px;
-            box-shadow: 0 4px 60px rgba(0, 255, 128, 0.1);
-            max-width: 600px;
-            width: 90%;
-            border: 1px solid #30363d;
-            position: relative; /* Needed for z-index context */
-            z-index: 1; /* Ensure content is above the canvas */
-            /* Add content entry animation */
-            animation: fadeInFromTop 1s ease-out forwards;
-            opacity: 0; /* Start hidden for the animation to work */
-        }
+    /* The custom, animated cursor element (now a square) */
+    .custom-cursor {
+        position: fixed;
+        width: 15px; /* Square dimensions */
+        height: 15px;
+        border: 2px solid #56d364; /* Vibrant green border */
+        background-color: transparent;
+        border-radius: 3px; /* Slightly rounded square */
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        transition: transform 0.1s ease-out, background-color 0.3s ease;
+        z-index: 10000;
+        animation: cursor-pulse 1.5s infinite ease-in-out; /* Add animation */
+    }
 
-        /* Keyframes for the content entry animation */
-        @keyframes fadeInFromTop {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    /* Hover state for the custom cursor (filled square) */
+    body:hover .custom-cursor {
+        background-color: #56d364;
+    }
 
-        h1 {
-            color: #56d364; /* Vibrant green */
-            font-size: 2.5em;
-        }
 
-        p {
-            margin-bottom: 1.5em;
-        }
-
-        /* Interactive Button Styling */
-        .deploy-btn {
-            background-color: #2ea043;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .deploy-btn:hover {
-            background-color: #4cd15f;
-            transform: scale(1.05); /* Added subtle hover animation */
-        }
-        
-        .deploy-btn:disabled {
-            background-color: #30363d;
-            cursor: not-allowed;
-        }
-
-        /* Progress Bar Styling */
-        .progress-container {
-            display: none;
-            width: 100%;
-            background-color: #30363d;
-            border-radius: 5px;
-            margin-top: 20px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            width: 0%;
-            height: 20px;
-            background-color: #56d364;
-            text-align: center;
-            line-height: 20px;
-            color: #0d1117;
-            transition: width 0.5s ease;
-        }
-    </style>
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+    .container {
+        text-align: center;
+        padding: 40px;
+        background: rgba(22, 27, 34, 0.9);
+        border-radius: 8px;
+        box-shadow: 0 4px 60px rgba(0, 255, 128, 0.1);
+        max-width: 600px;
+        width: 90%;
+        border: 1px solid #30363d;
+        position: relative;
+        z-index: 1;
+        animation: fadeInFromTop 1s ease-out forwards;
+        opacity: 0;
+    }
+    @keyframes fadeInFromTop {
+        from { opacity: 0; transform: translateY(-50px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    h1 {
+        color: #56d364;
+        font-size: 2.5em;
+    }
+    p {
+        margin-bottom: 1.5em;
+    }
+    .deploy-btn {
+        background-color: #2ea043;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: none; /* Hide default cursor on the button */
+        font-size: 1em;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .deploy-btn:hover {
+        background-color: #4cd15f;
+        transform: scale(1.05);
+    }
+    .deploy-btn:disabled {
+        background-color: #30363d;
+        cursor: not-allowed;
+    }
+    .progress-container {
+        display: none;
+        width: 100%;
+        background-color: #30363d;
+        border-radius: 5px;
+        margin-top: 20px;
+        overflow: hidden;
+    }
+    .progress-bar {
+        width: 0%;
+        height: 20px;
+        background-color: #56d364;
+        text-align: center;
+        line-height: 20px;
+        color: #0d1117;
+        transition: width 0.5s ease;
+    }
+</style>
 </head>
 <body>
-
+    <div class="custom-cursor" id="customCursor"></div>
     <canvas id="canvas"></canvas>
-
-    <div class="container">
+    <div class="container" id="mainContainer">
         <h1>DevOps Pipeline Status: Active</h1>
         <p>Continuous feedback loops and automation lead to faster, more reliable software delivery. Simulate a commit and deploy cycle below.</p>
-        
         <button class="deploy-btn" id="deployButton" onclick="simulateDeployment()">Simulate Commit & Deploy</button>
-        
         <div class="progress-container" id="progressContainer">
             <div class="progress-bar" id="progressBar">0%</div>
         </div>
     </div>
-
     <script>
-        // --- JavaScript for the Interactive Deployment Simulation (from previous code) ---
+        // --- JavaScript for the Interactive Deployment Simulation (unchanged) ---
         function simulateDeployment() {
             const button = document.getElementById('deployButton');
             const progressBar = document.getElementById('progressBar');
             const progressContainer = document.getElementById('progressContainer');
-            
             button.disabled = true;
             progressContainer.style.display = 'block';
             progressBar.style.width = '0%';
             progressBar.textContent = '0%';
-
             let progress = 0;
             const interval = setInterval(() => {
                 if (progress >= 100) {
                     clearInterval(interval);
                     progressBar.textContent = 'Deployment Complete!';
-                    setTimeout(() => {
-                        button.disabled = false;
-                        progressContainer.style.display = 'none';
-                    }, 2000);
+                    // Call the new function when deployment finishes
+                    setTimeout(stopGeneratingAndMoveAway, 1000); 
                 } else {
                     progress += 10;
                     progressBar.style.width = progress + '%';
@@ -147,11 +153,14 @@
             }, 300);
         }
 
-        // --- JavaScript for the Animated Canvas Background ---
-
+        // --- JavaScript for the Animated Canvas Background & Custom Cursor Logic (modified) ---
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
+        const customCursor = document.getElementById('customCursor');
+        const mainContainer = document.getElementById('mainContainer');
         let particles = [];
+        let mouse = { x: null, y: null };
+        let exodusMode = false; // New flag for particle exodus
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -161,73 +170,142 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
+        window.addEventListener('mousemove', function(event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
+            customCursor.style.left = `${event.clientX}px`;
+            customCursor.style.top = `${event.clientY}px`;
+        });
+
+        window.addEventListener('touchmove', function(event) {
+            mouse.x = event.touches.clientX;
+            mouse.y = event.touches.clientY;
+            customCursor.style.left = `${event.touches.clientX}px`;
+            customCursor.style.top = `${event.touches.clientY}px`;
+        });
+
+        // Add hover effects for the custom cursor
+        mainContainer.addEventListener('mouseenter', () => {
+            customCursor.style.backgroundColor = '#56d364';
+            customCursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+        });
+        mainContainer.addEventListener('mouseleave', () => {
+            customCursor.style.backgroundColor = 'transparent';
+            customCursor.style.transform = 'translate(-50%, -50%) scale(1)';
+        });
+
+
         class Particle {
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.vx = Math.random() * 0.5 - 0.25; // Velocity X
-                this.vy = Math.random() * 0.5 - 0.25; // Velocity Y
-                this.radius = Math.random() * 2 + 1; // Small radius
-                this.color = '#56d364'; // Tech green color
+                // Increased initial speed
+                this.vx = Math.random() * 3 - 1.5;
+                this.vy = Math.random() * 3 - 1.5;
+                this.baseVx = this.vx;
+                this.baseVy = this.vy;
+                this.radius = Math.random() * 2 + 1;
+                this.color = '#56d364';
+                this.originalColor = this.color;
             }
 
             update() {
+                if (exodusMode) {
+                    // Force all particles to move rapidly toward bottom right (away)
+                    this.vx += 0.1;
+                    this.vy += 0.1;
+                    this.radius *= 0.99; // Shrink as they leave
+                } else {
+                    // Normal interaction logic
+                    const dxMouse = mouse.x - this.x;
+                    const dyMouse = mouse.y - this.y;
+                    const distanceMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+                    const influenceRadius = 150;
+
+                    if (distanceMouse < influenceRadius) {
+                        const forceDirectionX = dxMouse / distanceMouse;
+                        const forceDirectionY = dyMouse / distanceMouse;
+                        const repulsionForce = (influenceRadius - distanceMouse) / influenceRadius;
+                        const maxSpeed = 6; // Stronger repulsion
+
+                        this.vx = -(forceDirectionX * repulsionForce * maxSpeed) || 0;
+                        this.vy = -(forceDirectionY * repulsionForce * maxSpeed) || 0;
+                        this.color = '#ffffff';
+                    } else {
+                        this.vx += (this.baseVx - this.vx) * 0.04;
+                        this.vy += (this.baseVy - this.vy) * 0.04;
+                        this.color = this.originalColor;
+                    }
+                }
+
                 this.x += this.vx;
                 this.y += this.vy;
 
-                // Bounce off edges
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                // Bounce logic only active before exodusMode
+                if (!exodusMode) {
+                    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                }
             }
 
             draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fill();
+                if (this.radius > 0.1) { // Only draw if visible
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             }
         }
 
+        const PARTICLE_COUNT = 400; // More particles
         function createParticles(count) {
             for (let i = 0; i < count; i++) {
                 particles.push(new Particle());
             }
         }
 
+        // Function to trigger the "move away" behavior
+        function stopGeneratingAndMoveAway() {
+            exodusMode = true;
+            // Filter out particles that have moved off-screen after a delay
+            setTimeout(() => {
+                particles = particles.filter(p => 
+                    p.x > 0 && p.x < canvas.width && p.y > 0 && p.y < canvas.height
+                );
+            }, 5000); // Give them 5 seconds to disappear
+        }
+
         function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas each frame
-            // Optional: Draw a subtle dark overlay to deepen the background color
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'rgba(13, 17, 23, 0.5)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
 
             for (let i = 0; i < particles.length; i++) {
                 particles[i].update();
                 particles[i].draw();
-
-                // Draw connecting lines between nearby particles
-                for (let j = i; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < 100) { // Only connect if close enough
-                        ctx.strokeStyle = `rgba(86, 211, 100, ${1 - (distance / 100)})`; // Fade lines based on distance
-                        ctx.lineWidth = 0.5;
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.stroke();
+                // Draw connecting lines only in normal mode
+                if (!exodusMode) {
+                    for (let j = i; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < 70) {
+                            ctx.strokeStyle = `rgba(86, 211, 100, ${0.4 - (distance / 70)})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
                     }
                 }
             }
             requestAnimationFrame(animate);
         }
 
-        createParticles(100); // Create 100 animated dots
-        animate(); // Start the animation loop
-
+        createParticles(PARTICLE_COUNT);
+        animate();
     </script>
-
 </body>
 </html>
